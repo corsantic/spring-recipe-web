@@ -1,12 +1,12 @@
 package enemo.springframework.recipe.domain;
 
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 public class Ingredient {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
