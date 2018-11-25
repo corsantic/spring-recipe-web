@@ -1,13 +1,16 @@
 package enemo.springframework.recipe.controllers;
 
+
 import enemo.springframework.recipe.services.RecipeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
+@RequestMapping("/recipes")
 public class RecipeController {
 
     private RecipeService recipeService;
@@ -16,18 +19,16 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @RequestMapping("/recipes")
-    public String recipeList(Model model) {
 
-        log.debug("Recipes Page");
+    @RequestMapping("/show/{id}")
+    public String getRecipeById(@PathVariable String id ,Model model){
 
-        model.addAttribute("recipes", recipeService.getRecipes());
+        model.addAttribute("recipe",recipeService.getById(Long.valueOf(id)));
 
 
-        return "recipes/index";
+        return "recipes/show";
 
 
     }
-
 
 }
