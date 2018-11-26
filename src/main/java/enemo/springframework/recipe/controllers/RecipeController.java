@@ -1,16 +1,15 @@
 package enemo.springframework.recipe.controllers;
 
 
+import enemo.springframework.recipe.commands.RecipeCommand;
 import enemo.springframework.recipe.services.RecipeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
-@RequestMapping("/recipes")
 public class RecipeController {
 
     private RecipeService recipeService;
@@ -20,15 +19,32 @@ public class RecipeController {
     }
 
 
-    @RequestMapping("/show/{id}")
-    public String getRecipeById(@PathVariable String id ,Model model){
+    @RequestMapping("recipe/show/{id}")
+    public String getRecipeById(@PathVariable String id, Model model) {
 
-        model.addAttribute("recipe",recipeService.getById(Long.valueOf(id)));
+        model.addAttribute("recipe", recipeService.getById(Long.valueOf(id)));
 
 
         return "recipes/show";
 
 
     }
+
+    @RequestMapping("recipe/new")
+    public String newRecipe(Model model) {
+        model.addAttribute("recipe", new RecipeCommand());
+
+        return "recipes/recipeform";
+    }
+
+    @PostMapping
+    @RequestMapping("recipe")
+    public String saveOrUpdate(@ModelAttribute RecipeCommand command) {
+        RecipeCommand savedCommand = recipeService.saveRecipeCommand(command);
+
+
+        return "redirect:/recipe/show/" + savedCommand.getId();
+    }
+
 
 }
