@@ -1,10 +1,14 @@
 package enemo.springframework.recipe.services;
 
+import enemo.springframework.recipe.commands.RecipeCommand;
+import enemo.springframework.recipe.converters.RecipeCommandToRecipe;
+import enemo.springframework.recipe.converters.RecipeToRecipeCommand;
 import enemo.springframework.recipe.domain.Recipe;
 import enemo.springframework.recipe.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -14,9 +18,14 @@ import java.util.Set;
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final RecipeCommandToRecipe recipeCommandToRecipe;
+    private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository) {
+
+    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe, RecipeToRecipeCommand recipeToRecipeCommand) {
         this.recipeRepository = recipeRepository;
+        this.recipeCommandToRecipe = recipeCommandToRecipe;
+        this.recipeToRecipeCommand = recipeToRecipeCommand;
     }
 
     @Override
@@ -31,16 +40,28 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Recipe getById(Long id) {
 
-       Optional<Recipe> recipe = recipeRepository.findById(id);
+        Optional<Recipe> recipe = recipeRepository.findById(id);
 
-       if(!recipe.isPresent()){
-           throw new RuntimeException("Recipe Not Found");
-       }
+        if (!recipe.isPresent()) {
+            throw new RuntimeException("Recipe Not Found");
+        }
 
 
+        return recipe.get();
 
-       return recipe.get();
 
+    }
+
+    @Override
+    @Transactional
+    public RecipeCommand saveRecipeCommand(RecipeCommand command) {
+        Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
+
+        Recipe savedRecipe = recipeRepository.save(detachedRecipe);
+
+        log.debug("Saved RecipeId: " + savedRecipe.getId());
+
+        return recipeToRecipeCommand.convert(savedRecipe);
 
 
     }

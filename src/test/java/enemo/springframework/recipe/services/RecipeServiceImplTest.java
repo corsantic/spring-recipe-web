@@ -1,5 +1,7 @@
 package enemo.springframework.recipe.services;
 
+import enemo.springframework.recipe.converters.RecipeCommandToRecipe;
+import enemo.springframework.recipe.converters.RecipeToRecipeCommand;
 import enemo.springframework.recipe.domain.Recipe;
 import enemo.springframework.recipe.repositories.RecipeRepository;
 import org.junit.Before;
@@ -23,11 +25,18 @@ public class RecipeServiceImplTest {
     @Mock
     RecipeRepository recipeRepository;
 
+
+    @Mock
+    RecipeCommandToRecipe recipeCommandToRecipe;
+
+    @Mock
+    RecipeToRecipeCommand recipeToRecipeCommand;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        recipeService = new RecipeServiceImpl(recipeRepository);
+        recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
 
     }
 
