@@ -40,6 +40,9 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Recipe getById(Long id) {
 
+        log.debug(" Getting Recipe by id : " + id);
+
+
         Optional<Recipe> recipe = recipeRepository.findById(id);
 
         if (!recipe.isPresent()) {
@@ -55,6 +58,9 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     @Transactional
     public RecipeCommand saveRecipeCommand(RecipeCommand command) {
+
+        log.debug(" Saving Recipe with RecipeCommand ");
+
         Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
 
         Recipe savedRecipe = recipeRepository.save(detachedRecipe);
