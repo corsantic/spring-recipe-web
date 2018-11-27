@@ -1,7 +1,8 @@
 package enemo.springframework.recipe.controllers;
 
+import enemo.springframework.recipe.commands.IngredientCommand;
 import enemo.springframework.recipe.commands.RecipeCommand;
-import enemo.springframework.recipe.domain.Recipe;
+import enemo.springframework.recipe.services.IngredientService;
 import enemo.springframework.recipe.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,9 @@ public class IngredientControllerTest {
 
     @Mock
     RecipeService recipeService;
+    @Mock
+    IngredientService ingredientService;
+
 
     IngredientController controller;
 
@@ -33,7 +37,7 @@ public class IngredientControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        controller = new IngredientController(recipeService);
+        controller = new IngredientController(recipeService, ingredientService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
 
@@ -59,5 +63,19 @@ public class IngredientControllerTest {
         verify(recipeService,times(1)).findByCommandId(anyLong());
 
 
+    }
+    @Test
+    public void testShowIngredient() throws Exception {
+        //given
+        IngredientCommand ingredientCommand = new IngredientCommand();
+
+        //when
+        when(ingredientService.findByRecipeIdAndIngredientId(anyLong(), anyLong())).thenReturn(ingredientCommand);
+
+        //then
+        mockMvc.perform(get("/recipe/ingredient/1/show/2"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("recipes/ingredient/show"))
+                .andExpect(model().attributeExists("ingredient"));
     }
 }
