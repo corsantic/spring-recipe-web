@@ -2,14 +2,18 @@ package enemo.springframework.recipe.controllers;
 
 import enemo.springframework.recipe.commands.IngredientCommand;
 import enemo.springframework.recipe.commands.RecipeCommand;
+import enemo.springframework.recipe.commands.UnitOfMeasureCommand;
 import enemo.springframework.recipe.services.IngredientService;
 import enemo.springframework.recipe.services.RecipeService;
+import enemo.springframework.recipe.services.UnitOfMeasureService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.HashSet;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
@@ -27,6 +31,8 @@ public class IngredientControllerTest {
     RecipeService recipeService;
     @Mock
     IngredientService ingredientService;
+    @Mock
+    UnitOfMeasureService unitOfMeasureService;
 
 
     IngredientController controller;
@@ -37,7 +43,7 @@ public class IngredientControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        controller = new IngredientController(recipeService, ingredientService);
+        controller = new IngredientController(recipeService, ingredientService, unitOfMeasureService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
 
@@ -65,7 +71,7 @@ public class IngredientControllerTest {
 
     }
     @Test
-    public void testShowIngredient() throws Exception {
+    public void showIngredient() throws Exception {
         //given
         IngredientCommand ingredientCommand = new IngredientCommand();
 
@@ -78,4 +84,24 @@ public class IngredientControllerTest {
                 .andExpect(view().name("recipes/ingredient/show"))
                 .andExpect(model().attributeExists("ingredient"));
     }
+    @Test
+    public void testUpdateIngredientForm() throws Exception {
+        //given
+        IngredientCommand ingredientCommand = new IngredientCommand();
+
+        //when
+        when(ingredientService.findByRecipeIdAndIngredientId(anyLong(), anyLong())).thenReturn(ingredientCommand);
+        when(unitOfMeasureService.listOfUoms()).thenReturn(new HashSet<>());
+
+        //then
+        mockMvc.perform(get("/recipe/ingredient/1/update/2"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("recipes/ingredient/ingredientform"))
+                .andExpect(model().attributeExists("ingredient"))
+                .andExpect(model().attributeExists("uomList"));
+    }
+
+
+
+
 }
