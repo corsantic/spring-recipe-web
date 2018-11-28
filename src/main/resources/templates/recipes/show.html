@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8"/>
     <title>Show Recipe</title>
@@ -89,6 +89,7 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-12">
+                                <a  class="btn btn-default" href="#"  th:href="@{'/recipe/ingredients/' + ${recipe.id}}" role="button" > View List </a>
                                 <ul>
                                     <li th:remove="all">1 Cup of milk</li>
                                     <li th:remove="all">1 Teaspoon of chocolate</li>

@@ -8,9 +8,7 @@ import enemo.springframework.recipe.services.UnitOfMeasureService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
@@ -38,7 +36,7 @@ public class IngredientController {
     }
 
     @GetMapping
-    @RequestMapping("recipe/ingredient/{recipeId}/show/{ingredientId}")
+    @RequestMapping("recipe/ingredients/{recipeId}/show/{ingredientId}")
     public String showIngredients(@PathVariable String recipeId, @PathVariable String ingredientId, Model model) {
 
         IngredientCommand ingredientCommand = ingredientService.findByRecipeIdAndIngredientId(Long.valueOf(recipeId), Long.valueOf(ingredientId));
@@ -50,7 +48,7 @@ public class IngredientController {
     }
 
     @GetMapping
-    @RequestMapping("recipe/ingredient/{recipeId}/update/{ingredientId}")
+    @RequestMapping("recipe/ingredients/{recipeId}/update/{ingredientId}")
     public String updateRecipeIngredient(@PathVariable String recipeId,
                                          @PathVariable String ingredientId, Model model) {
         model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(Long.valueOf(recipeId), Long.valueOf(ingredientId)));
@@ -60,6 +58,17 @@ public class IngredientController {
 
         return "recipes/ingredient/ingredientform";
 
+
+    }
+
+    @PostMapping("recipe/ingredients/{recipeId}")
+    public String saveOrUpdate(@ModelAttribute IngredientCommand ingredientCommand) {
+        IngredientCommand savedCommand = ingredientService.saveIngredientCommand(ingredientCommand);
+
+        log.debug("saved recipe id:" + savedCommand.getRecipeId());
+        log.debug("saved ingredient id:" + savedCommand.getId());
+
+        return "redirect:/recipe/ingredients/" + savedCommand.getRecipeId() + "/show/" + savedCommand.getId();
 
     }
 
