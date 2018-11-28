@@ -2,6 +2,9 @@ package enemo.springframework.recipe.controllers;
 
 
 import enemo.springframework.recipe.commands.IngredientCommand;
+import enemo.springframework.recipe.commands.RecipeCommand;
+import enemo.springframework.recipe.commands.UnitOfMeasureCommand;
+import enemo.springframework.recipe.converters.IngredientCommandToIngredient;
 import enemo.springframework.recipe.services.IngredientService;
 import enemo.springframework.recipe.services.RecipeService;
 import enemo.springframework.recipe.services.UnitOfMeasureService;
@@ -46,6 +49,32 @@ public class IngredientController {
 
         return "recipes/ingredient/show";
     }
+
+    @GetMapping
+    @RequestMapping("recipe/ingredients/{recipeId}/new")
+    public String newIngredient(@PathVariable String recipeId, Model model) {
+        RecipeCommand recipeCommand = recipeService.findByCommandId(Long.valueOf(recipeId));
+
+        if(recipeCommand.getId() == null)
+            log.debug("recipe Command id is NULL");
+
+        // need to return back parent id for hidden form property
+        IngredientCommand ingredientCommand = new IngredientCommand();
+
+        ingredientCommand.setRecipeId(Long.valueOf(recipeId));
+
+        model.addAttribute("ingredient", ingredientCommand);
+
+        ingredientCommand.setUnitOfMeasure(new UnitOfMeasureCommand());
+
+        // init uom
+        model.addAttribute("uomList", unitOfMeasureService.listOfUoms());
+
+        return "recipes/ingredient/ingredientform";
+
+
+    }
+
 
     @GetMapping
     @RequestMapping("recipe/ingredients/{recipeId}/update/{ingredientId}")
