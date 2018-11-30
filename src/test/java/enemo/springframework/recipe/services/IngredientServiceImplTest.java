@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 public class IngredientServiceImplTest {
 
     private final IngredientToIngredientCommand ingredientToIngredientCommand;
-    private final  IngredientCommandToIngredient ingredientCommandToIngredient;
+    private final IngredientCommandToIngredient ingredientCommandToIngredient;
 
 
     @Mock
@@ -36,11 +36,10 @@ public class IngredientServiceImplTest {
     UnitOfMeasureRepository unitOfMeasureRepository;
 
 
-
     //init converters
     public IngredientServiceImplTest() {
         this.ingredientToIngredientCommand = new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand());
-        this. ingredientCommandToIngredient = new IngredientCommandToIngredient(new UnitOfMeasureCommandToUnitOfMeasure() );
+        this.ingredientCommandToIngredient = new IngredientCommandToIngredient(new UnitOfMeasureCommandToUnitOfMeasure());
     }
 
     @Before
@@ -84,6 +83,7 @@ public class IngredientServiceImplTest {
         assertEquals(Long.valueOf(1L), ingredientCommand.getRecipeId());
         verify(recipeRepository, times(1)).findById(anyLong());
     }
+
     @Test
     public void testSaveRecipeCommand() throws Exception {
         //given
@@ -110,4 +110,26 @@ public class IngredientServiceImplTest {
 
     }
 
+    @Test
+    public void testDeleteById() throws Exception {
+
+        Recipe recipe = new Recipe();
+        Ingredient ingredient = new Ingredient();
+        ingredient.setId(3L);
+        recipe.addIngredient(ingredient);
+
+        Optional<Recipe> recipeOptional = Optional.of(recipe);
+
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        //when
+        ingredientService.deleteById(1L, 3L);
+
+
+        //then
+        verify(recipeRepository, times(1)).findById(anyLong());
+        verify(recipeRepository, times(1)).save(any(Recipe.class));
+
+
+    }
 }
