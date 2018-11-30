@@ -85,11 +85,12 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <h1 class="panel-title" >Ingredients</h1>
+                        <a  class="btn btn-default pull-right" href="#"  th:href="@{'/recipe/ingredients/' + ${recipe.id}}" role="button" > View List </a>
+
                     </div>
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <a  class="btn btn-default" href="#"  th:href="@{'/recipe/ingredients/' + ${recipe.id}}" role="button" > View List </a>
                                 <ul>
                                     <li th:remove="all">1 Cup of milk</li>
                                     <li th:remove="all">1 Teaspoon of chocolate</li>
