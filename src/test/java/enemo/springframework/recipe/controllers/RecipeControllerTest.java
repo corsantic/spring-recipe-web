@@ -2,6 +2,7 @@ package enemo.springframework.recipe.controllers;
 
 import enemo.springframework.recipe.commands.RecipeCommand;
 import enemo.springframework.recipe.domain.Recipe;
+import enemo.springframework.recipe.exceptions.NotFoundException;
 import enemo.springframework.recipe.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +59,18 @@ public class RecipeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipes/recipeform"))
                 .andExpect(model().attributeExists("recipe"));
+    }
+
+    @Test
+    public void testGetRecipeNotFound() throws Exception{
+        Recipe recipe = new Recipe();
+        recipe.setId(1L);
+
+        when(recipeService.getById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("recipe/show/1"))
+                .andExpect(status().isNotFound());
+
     }
 
     @Test

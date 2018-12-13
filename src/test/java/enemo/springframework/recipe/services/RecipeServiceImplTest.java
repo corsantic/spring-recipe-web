@@ -4,6 +4,7 @@ import enemo.springframework.recipe.commands.RecipeCommand;
 import enemo.springframework.recipe.converters.RecipeCommandToRecipe;
 import enemo.springframework.recipe.converters.RecipeToRecipeCommand;
 import enemo.springframework.recipe.domain.Recipe;
+import enemo.springframework.recipe.exceptions.NotFoundException;
 import enemo.springframework.recipe.repositories.RecipeRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +52,19 @@ public class RecipeServiceImplTest {
         verify(recipeRepository, times(1)).findById(anyLong());
         verify(recipeRepository, never()).findAll();
     }
+    @Test(expected = NotFoundException.class)
+    public void getRecipeByIdTestNotFound() throws Exception {
+        Optional<Recipe> recipeOptional = Optional.empty();
+        when(recipeRepository.findById(anyLong())).thenReturn((recipeOptional));
+
+        Recipe recipeReturned = recipeService.getById(1L);
+
+
+
+
+
+    }
+
 
     @Test
     public void getRecipeCommandByIdTest() throws Exception {

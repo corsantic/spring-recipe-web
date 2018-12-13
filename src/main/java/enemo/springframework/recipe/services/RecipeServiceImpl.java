@@ -4,6 +4,7 @@ import enemo.springframework.recipe.commands.RecipeCommand;
 import enemo.springframework.recipe.converters.RecipeCommandToRecipe;
 import enemo.springframework.recipe.converters.RecipeToRecipeCommand;
 import enemo.springframework.recipe.domain.Recipe;
+import enemo.springframework.recipe.exceptions.NotFoundException;
 import enemo.springframework.recipe.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class RecipeServiceImpl implements RecipeService {
         Optional<Recipe> recipe = recipeRepository.findById(id);
 
         if (!recipe.isPresent()) {
-            throw new RuntimeException("Recipe Not Found");
+            throw new NotFoundException("Recipe Not Found");
         }
 
 
