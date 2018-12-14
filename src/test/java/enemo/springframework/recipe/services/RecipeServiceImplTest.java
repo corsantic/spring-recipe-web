@@ -15,7 +15,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class RecipeServiceImplTest {
@@ -60,10 +61,8 @@ public class RecipeServiceImplTest {
         Recipe recipeReturned = recipeService.getById(1L);
 
 
-
-
-
     }
+
 
 
     @Test

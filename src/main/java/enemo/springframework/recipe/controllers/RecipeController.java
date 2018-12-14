@@ -7,7 +7,6 @@ import enemo.springframework.recipe.services.RecipeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +25,7 @@ public class RecipeController {
 
     @GetMapping("recipe/show/{id}")
     public String getRecipeById(@PathVariable String id, Model model) {
+
 
         model.addAttribute("recipe", recipeService.getById(Long.valueOf(id)));
 
@@ -73,12 +73,28 @@ public class RecipeController {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    public ModelAndView handleNotFound() {
+    public ModelAndView handleNotFound(Exception exception ) {
         log.error("Handling not found exception");
-
+        log.error(exception.getMessage());
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.setViewName("404error");
+        modelAndView.addObject("exception",exception);
+
+
+        return modelAndView;
+
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public ModelAndView handleBadRequest(Exception exception) {
+        log.error("Handling bad request exception");
+        log.error(exception.getMessage());
+        ModelAndView modelAndView = new ModelAndView();
+
+        modelAndView.setViewName("400error");
+        modelAndView.addObject("exception",exception);
+
 
         return modelAndView;
 
